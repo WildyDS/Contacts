@@ -1,0 +1,17 @@
+# OSX
+#
+.DS_Store
+
+# Android/IJ
+#
+*.iml
+.gradle
+local.properties
+
+# VSCode
+#
+jsconfig.json
+
+# Idea
+#
+.idea

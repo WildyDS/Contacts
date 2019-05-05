@@ -7,13 +7,17 @@ import androidx.lifecycle.ViewModel
 
 class ContactListModel : ViewModel() {
 
-    private val contacts: MutableLiveData<List<Contact>> = MutableLiveData()
+    private val contacts: MutableLiveData<List<Contact>?> = MutableLiveData()
 
-    fun getContacts(): LiveData<List<Contact>> {
+    fun getContacts(): LiveData<List<Contact>?> {
         return contacts
     }
 
-    private fun loadContacts() {
+    fun clearContacts() {
+        contacts.postValue(null)
+    }
+
+    fun loadContacts() {
         // TODO: load contacts
         val list = ArrayList<Contact>()
         for (i in 1..100) {

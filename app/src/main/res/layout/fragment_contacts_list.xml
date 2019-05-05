@@ -1,14 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout>
-    <androidx.recyclerview.widget.RecyclerView
-            xmlns:android="http://schemas.android.com/apk/res/android"
-            xmlns:tools="http://schemas.android.com/tools"
-            android:id="@+id/list"
-            android:name="alexander.logunov.contacts.ui.main.ContactsFragment"
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginLeft="16dp"
-            android:layout_marginRight="16dp"
-            tools:context=".view.ContactsFragment"
-            tools:listitem="@layout/contact"/>
+            android:id="@+id/swipe_refresh">
+        <androidx.recyclerview.widget.RecyclerView
+                xmlns:tools="http://schemas.android.com/tools"
+                android:id="@+id/recycler"
+                android:name="alexander.logunov.contacts.ui.main.ContactsFragment"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                tools:context=".view.ContactsFragment"
+                tools:listitem="@layout/contact" />
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 </layout>

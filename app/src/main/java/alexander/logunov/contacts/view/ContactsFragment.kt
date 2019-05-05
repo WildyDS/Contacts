@@ -4,14 +4,17 @@ import alexander.logunov.contacts.adapter.ContactsRecyclerAdapter
 import alexander.logunov.contacts.data.model.Contact
 import alexander.logunov.contacts.databinding.FragmentContactsListBinding
 import alexander.logunov.contacts.view_model.ContactListModel
+import androidx.lifecycle.ViewModelProviders
 import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import java.util.*
+import kotlin.collections.ArrayList
+import kotlin.concurrent.schedule
 
 /**
  * A fragment representing a list of Items.
@@ -21,27 +24,26 @@ import androidx.recyclerview.widget.RecyclerView
 class ContactsFragment : androidx.fragment.app.Fragment() {
     private lateinit var viewModel: ContactListModel
 
-    private lateinit var list: ArrayList<Contact>
-
     private lateinit var contactsAdapter: ContactsRecyclerAdapter
+
+    private var binding: FragmentContactsListBinding? = null
+
+    private val refreshListener: SwipeRefreshLayout.OnRefreshListener = SwipeRefreshLayout.OnRefreshListener {
+        viewModel.clearContacts()
+        Timer().schedule(1000) {
+            viewModel.loadContacts()
+            // TODO: в биндинг
+            binding?.swipeRefresh?.isRefreshing = false
+        }
+    }
 
     private var listener: OnListFragmentInteractionListener? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewModel = ViewModelProviders.of(this).get(ContactListModel::class.java)
-        list = ArrayList()
-        list.add(Contact(
-            "test-id 0",
-            "Имя 0",
-            "Телефон 0",
-            0.toFloat(),
-            null,
-            null,
-            null
-        ))
         contactsAdapter = ContactsRecyclerAdapter(
-            list,
+            ArrayList(),
             listener
         )
         viewModel.getContacts().observe(
@@ -54,14 +56,17 @@ class ContactsFragment : androidx.fragment.app.Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val view = FragmentContactsListBinding.inflate(inflater, container, false).root
-        if (view is RecyclerView) {
-            with(view) {
-                layoutManager = LinearLayoutManager(context)
-                adapter = contactsAdapter
-            }
+        binding = FragmentContactsListBinding.inflate(
+            inflater,
+            container,
+            false
+        )
+        binding!!.swipeRefresh.setOnRefreshListener(refreshListener)
+        with(binding!!.recycler) {
+            layoutManager = LinearLayoutManager(context)
+            adapter = contactsAdapter
         }
-        return view
+        return binding!!.root
     }
 
     override fun onAttach(context: Context) {
@@ -76,6 +81,7 @@ class ContactsFragment : androidx.fragment.app.Fragment() {
     override fun onDetach() {
         super.onDetach()
         listener = null
+        binding = null
     }
 
     interface OnListFragmentInteractionListener {

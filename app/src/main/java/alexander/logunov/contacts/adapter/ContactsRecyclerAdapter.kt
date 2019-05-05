@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import kotlinx.android.synthetic.main.contact.view.*
 
 // TODO: сделать binding, binding adapter
@@ -19,7 +20,7 @@ import kotlinx.android.synthetic.main.contact.view.*
  * specified [OnListFragmentInteractionListener].
  */
 class ContactsRecyclerAdapter(
-    private var mContacts: List<Contact>,
+    private var mContacts: List<Contact>?,
     private val mListener: OnListFragmentInteractionListener?
 ) : RecyclerView.Adapter<ContactsRecyclerAdapter.ViewHolder>() {
 
@@ -44,7 +45,7 @@ class ContactsRecyclerAdapter(
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val contact = mContacts[position]
+        val contact = mContacts!![position]
 
         holder.mNameView.text = contact.name
         holder.mPhoneView.text = contact.phone
@@ -56,7 +57,7 @@ class ContactsRecyclerAdapter(
         }
     }
 
-    override fun getItemCount(): Int = mContacts.size
+    override fun getItemCount(): Int = mContacts?.size ?: 0
 
     inner class ViewHolder(val mView: View) : RecyclerView.ViewHolder(mView) {
 
@@ -69,7 +70,7 @@ class ContactsRecyclerAdapter(
         }
     }
 
-    val contactsChangeHandler: Observer<List<Contact>> = Observer { contacts ->
+    val contactsChangeHandler: Observer<List<Contact>?> = Observer { contacts ->
         mContacts = contacts
         notifyDataSetChanged()
     }

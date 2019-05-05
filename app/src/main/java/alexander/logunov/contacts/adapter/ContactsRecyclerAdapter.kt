@@ -1,17 +1,13 @@
 package alexander.logunov.contacts.adapter
 
-import alexander.logunov.contacts.R
 import alexander.logunov.contacts.data.model.Contact
 import alexander.logunov.contacts.databinding.ContactBinding
 import alexander.logunov.contacts.view.ContactsFragment.OnListFragmentInteractionListener
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.RecyclerView
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import kotlinx.android.synthetic.main.contact.view.*
 
 // TODO: сделать binding, binding adapter
 
@@ -28,10 +24,10 @@ class ContactsRecyclerAdapter(
 
     init {
         mOnClickListener = View.OnClickListener { v ->
-            val item = v.tag as Contact
+            val contact = v.tag as Contact
             // Notify the active callbacks interface (the activity, if the fragment is attached to
             // one) that an item has been selected.
-            mListener?.onListFragmentInteraction(item)
+            mListener?.onListFragmentInteraction(contact)
         }
     }
 
@@ -41,32 +37,23 @@ class ContactsRecyclerAdapter(
             parent,
             false
         )
-        return ViewHolder(contactBinding.root)
+        return ViewHolder(contactBinding)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val contact = mContacts!![position]
-
-        holder.mNameView.text = contact.name
-        holder.mPhoneView.text = contact.phone
-        holder.mHeightView.text = contact.height.toString()
-
-        with(holder.mView) {
-            tag = contact
-            setOnClickListener(mOnClickListener)
+        val mContact = mContacts!![position]
+        with(holder.binding) {
+            contact = mContact
+            root.tag = mContact
+            root.setOnClickListener(mOnClickListener)
         }
     }
 
     override fun getItemCount(): Int = mContacts?.size ?: 0
 
-    inner class ViewHolder(val mView: View) : RecyclerView.ViewHolder(mView) {
-
-        val mNameView: TextView = mView.name
-        val mPhoneView: TextView = mView.phone
-        val mHeightView: TextView = mView.findViewById(R.id.height)
-
+    inner class ViewHolder(val binding: ContactBinding) : RecyclerView.ViewHolder(binding.root) {
         override fun toString(): String {
-            return super.toString() + " '" + mNameView.text + "'"
+            return super.toString() + " '" + binding.name + "'"
         }
     }
 

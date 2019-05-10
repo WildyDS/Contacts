@@ -7,7 +7,7 @@ import androidx.lifecycle.ViewModel
 
 class ContactListModel : ViewModel() {
 
-    private val contacts: MutableLiveData<List<Contact>?> = MutableLiveData()
+    public val contacts: MutableLiveData<List<Contact>?> = MutableLiveData()
 
     fun getContacts(): LiveData<List<Contact>?> {
         return contacts
@@ -19,9 +19,26 @@ class ContactListModel : ViewModel() {
 
     fun loadContacts() {
         // TODO: load contacts
-        val list = ArrayList<Contact>()
+        contacts.postValue(contactsList)
+    }
+
+    fun saveContacts() {
+        // TODO: save contacts
+    }
+
+    fun filterByNameOrPhone(query: String)  {
+        if (query.isEmpty()) {
+            contacts.postValue(contactsList)
+        } else {
+            contacts.postValue(contactsList.filter {
+                    contact  -> contact.name.contains(query) || contact.phone.contains(query)
+            })
+        }
+    }
+
+    init {
         for (i in 1..100) {
-            list.add(
+            contactsList.add(
                 Contact(
                     "test-id $i",
                     "Имя $i",
@@ -33,10 +50,10 @@ class ContactListModel : ViewModel() {
                 )
             )
         }
-        contacts.postValue(list)
+        loadContacts()
     }
 
-    init {
-        loadContacts()
+    public companion object {
+        val contactsList: ArrayList<Contact> = ArrayList()
     }
 }

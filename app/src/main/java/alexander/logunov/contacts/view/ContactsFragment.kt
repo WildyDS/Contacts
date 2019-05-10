@@ -4,12 +4,14 @@ import alexander.logunov.contacts.adapter.ContactsRecyclerAdapter
 import alexander.logunov.contacts.data.model.Contact
 import alexander.logunov.contacts.databinding.FragmentContactsListBinding
 import alexander.logunov.contacts.view_model.ContactListModel
-import androidx.lifecycle.ViewModelProviders
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.widget.SearchView
+import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import java.util.*
@@ -22,6 +24,8 @@ import kotlin.concurrent.schedule
  * [ContactsFragment.OnListFragmentInteractionListener] interface.
  */
 class ContactsFragment : androidx.fragment.app.Fragment() {
+    private val TAG: String = "ContactsFragment"
+
     private lateinit var viewModel: ContactListModel
 
     private lateinit var contactsAdapter: ContactsRecyclerAdapter
@@ -38,6 +42,23 @@ class ContactsFragment : androidx.fragment.app.Fragment() {
     }
 
     private var listener: OnListFragmentInteractionListener? = null
+
+    private val queryChangeListener: SearchView.OnQueryTextListener = object : SearchView.OnQueryTextListener {
+        override fun onQueryTextSubmit(query: String?): Boolean {
+            if (query != null) {
+                viewModel.filterByNameOrPhone(query)
+                return true
+            }
+            return false
+        }
+        override fun onQueryTextChange(newText: String?): Boolean {
+            if (newText != null) {
+                viewModel.filterByNameOrPhone(newText)
+                return true
+            }
+            return false
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -65,6 +86,9 @@ class ContactsFragment : androidx.fragment.app.Fragment() {
         with(binding!!.recycler) {
             layoutManager = LinearLayoutManager(context)
             adapter = contactsAdapter
+        }
+        with(binding!!.search) {
+            setOnQueryTextListener(queryChangeListener)
         }
         return binding!!.root
     }

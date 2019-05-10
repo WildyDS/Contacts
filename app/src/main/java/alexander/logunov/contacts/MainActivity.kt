@@ -5,6 +5,7 @@ import alexander.logunov.contacts.databinding.ActivityMainBinding
 import alexander.logunov.contacts.view.ContactsFragment
 import android.os.Bundle
 import android.util.Log
+import android.view.Menu
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 
@@ -29,5 +30,4 @@ class MainActivity : AppCompatActivity(), ContactsFragment.OnListFragmentInterac
     override fun onListFragmentInteraction(contact: Contact?) {
         Log.d(TAG, contact?.toString())
     }
-
 }

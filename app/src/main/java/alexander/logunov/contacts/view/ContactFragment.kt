@@ -17,7 +17,7 @@ import androidx.databinding.DataBindingUtil
 
 class ContactFragment(val contact: Contact) : Fragment() {
 
-    lateinit var binding: ContactFragmentBinding
+    private lateinit var binding: ContactFragmentBinding
 
     companion object {
         fun newInstance(contact: Contact) = ContactFragment(contact)

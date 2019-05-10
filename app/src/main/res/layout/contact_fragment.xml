@@ -25,8 +25,10 @@
                 android:layout_height="wrap_content"
                 android:text="@{contact.name}"
                 style="@style/Text.Header"
-                android:layout_marginVertical="8dp"
-                android:layout_marginHorizontal="16dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
         />
 
         <TextView
@@ -34,8 +36,10 @@
                 android:layout_height="wrap_content"
                 android:text="@{contact.phone}"
                 android:linksClickable="true"
-                android:layout_marginVertical="8dp"
-                android:layout_marginHorizontal="16dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
                 style="@style/Text.Link"
         />
 
@@ -43,8 +47,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@{contact.temperament}"
-                android:layout_marginVertical="8dp"
-                android:layout_marginHorizontal="16dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
                 style="@style/Text.Secondary"
         />
 
@@ -52,8 +58,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@{contact.educationPeriod}"
-                android:layout_marginVertical="8dp"
-                android:layout_marginHorizontal="16dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
                 style="@style/Text.Secondary"
         />
 
@@ -61,8 +69,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@{contact.biography}"
-                android:layout_marginVertical="8dp"
-                android:layout_marginHorizontal="16dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
                 style="@style/Text"
         />
 

@@ -24,8 +24,6 @@ import kotlin.concurrent.schedule
  * [ContactsFragment.OnListFragmentInteractionListener] interface.
  */
 class ContactsFragment : androidx.fragment.app.Fragment() {
-    private val TAG: String = "ContactsFragment"
-
     private lateinit var viewModel: ContactListModel
 
     private lateinit var contactsAdapter: ContactsRecyclerAdapter
@@ -37,7 +35,13 @@ class ContactsFragment : androidx.fragment.app.Fragment() {
         Timer().schedule(1000) {
             viewModel.loadContacts()
             // TODO: в биндинг
-            binding?.swipeRefresh?.isRefreshing = false
+            with (binding) {
+                if (this !== null) {
+                    root.post {
+                        swipeRefresh.isRefreshing = false
+                    }
+                }
+            }
         }
     }
 
@@ -103,6 +107,7 @@ class ContactsFragment : androidx.fragment.app.Fragment() {
     }
 
     override fun onDetach() {
+        Log.d(TAG, "Detached")
         super.onDetach()
         listener = null
         binding = null
@@ -115,5 +120,6 @@ class ContactsFragment : androidx.fragment.app.Fragment() {
     companion object {
         @JvmStatic
         fun newInstance() = ContactsFragment()
+        const val TAG: String = "ContactsFragment"
     }
 }

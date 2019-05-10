@@ -11,7 +11,7 @@ import kotlin.collections.ArrayList
 
 class ContactListModel : ViewModel() {
 
-    public val contacts: MutableLiveData<List<Contact>?> = MutableLiveData()
+    val contacts: MutableLiveData<List<Contact>?> = MutableLiveData()
 
     fun getContacts(): LiveData<List<Contact>?> {
         return contacts
@@ -57,7 +57,7 @@ class ContactListModel : ViewModel() {
         loadContacts()
     }
 
-    public companion object {
+    companion object {
         val contactsList: ArrayList<Contact> = ArrayList()
     }
 }

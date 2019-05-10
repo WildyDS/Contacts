@@ -8,9 +8,12 @@ import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.FragmentTransaction
 
 class MainActivity : AppCompatActivity(), ContactsFragment.OnListFragmentInteractionListener {
-    val TAG: String = "MainActivity"
+    companion object {
+        const val TAG: String = "MainActivity"
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,6 +35,7 @@ class MainActivity : AppCompatActivity(), ContactsFragment.OnListFragmentInterac
         supportFragmentManager.beginTransaction()
             .replace(R.id.container, ContactFragment.newInstance(contact))
             .addToBackStack("ContactFragment")
+            .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
             .commit()
     }
 

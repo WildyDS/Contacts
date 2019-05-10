@@ -1,9 +1,13 @@
 package alexander.logunov.contacts.view_model
 
 import alexander.logunov.contacts.data.model.Contact
+import alexander.logunov.contacts.data.model.EducationPeriod
+import alexander.logunov.contacts.data.model.Temperament
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import java.util.*
+import kotlin.collections.ArrayList
 
 class ContactListModel : ViewModel() {
 
@@ -42,11 +46,11 @@ class ContactListModel : ViewModel() {
                 Contact(
                     "test-id $i",
                     "Имя $i",
-                    "Телефон $i",
+                    "+7 (900) 000-0$i",
                     i.toFloat(),
-                    null,
-                    null,
-                    null
+                    "Biograrphy",
+                    Temperament.Choleric,
+                    EducationPeriod(Date(), Date())
                 )
             )
         }

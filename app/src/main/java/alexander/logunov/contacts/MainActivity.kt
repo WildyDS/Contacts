@@ -2,10 +2,10 @@ package alexander.logunov.contacts
 
 import alexander.logunov.contacts.data.model.Contact
 import alexander.logunov.contacts.databinding.ActivityMainBinding
+import alexander.logunov.contacts.view.ContactFragment
 import alexander.logunov.contacts.view.ContactsFragment
 import android.os.Bundle
 import android.util.Log
-import android.view.Menu
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 
@@ -27,7 +27,26 @@ class MainActivity : AppCompatActivity(), ContactsFragment.OnListFragmentInterac
         }
     }
 
-    override fun onListFragmentInteraction(contact: Contact?) {
-        Log.d(TAG, contact?.toString())
+    override fun onListFragmentInteraction(contact: Contact) {
+        Log.d(TAG, contact.toString())
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.container, ContactFragment.newInstance(contact))
+            .addToBackStack("ContactFragment")
+            .commit()
+    }
+
+    override fun onSupportNavigateUp(): Boolean {
+        onBackPressed()
+        return true
+    }
+
+    override fun onBackPressed() {
+        with (supportFragmentManager)  {
+            if (backStackEntryCount > 0) {
+                popBackStack()
+            }  else {
+                super.onBackPressed()
+            }
+        }
     }
 }

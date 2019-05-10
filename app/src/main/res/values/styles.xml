@@ -11,9 +11,31 @@
         <item name="android:textColorLink">@color/colorBlue</item>
     </style>
 
-    <style name = "AppTheme.NoActionBar" parent = "@style/AppTheme">
+    <style name = "AppTheme.NoActionBar" parent = "AppTheme">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
+    </style>
+
+    <style name="AppTheme.Toolbar" parent = "AppTheme">
+        <item name="android:textColorPrimary">@android:color/white</item>
+        <item name="android:textColorSecondary">@android:color/white</item>
+    </style>
+
+    <style name="Text">
+        <item name="android:textColor">@color/colorBlack</item>
+        <item name="android:textColorLink">@color/colorBlue</item>
+    </style>
+
+    <style name="Text.Header" parent="Text">
+        <item name="android:textSize">20sp</item>
+    </style>
+
+    <style name="Text.Secondary" parent="Text">
+        <item name="android:textColor">@color/colorGray</item>
+    </style>
+
+    <style name="Text.Link" parent="Text">
+        <item name="android:textColor">@color/colorBlue</item>
     </style>
 
 </resources>

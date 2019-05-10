@@ -109,7 +109,7 @@ class ContactsFragment : androidx.fragment.app.Fragment() {
     }
 
     interface OnListFragmentInteractionListener {
-        fun onListFragmentInteraction(contact: Contact?)
+        fun onListFragmentInteraction(contact: Contact)
     }
 
     companion object {

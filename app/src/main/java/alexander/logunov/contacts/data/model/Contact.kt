@@ -8,7 +8,7 @@ import java.util.*
 
 @Entity
 enum class Temperament {
-    Melancholic, Phlegmatic, Sanguine, Choleric
+    melancholic, phlegmatic, sanguine, choleric
 }
 
 @Entity

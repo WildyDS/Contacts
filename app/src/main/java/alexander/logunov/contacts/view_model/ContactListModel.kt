@@ -3,9 +3,14 @@ package alexander.logunov.contacts.view_model
 import alexander.logunov.contacts.data.model.Contact
 import alexander.logunov.contacts.data.model.EducationPeriod
 import alexander.logunov.contacts.data.model.Temperament
+import alexander.logunov.contacts.network.Api
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -21,9 +26,24 @@ class ContactListModel : ViewModel() {
         contacts.postValue(null)
     }
 
+    private val onContacts = object : Callback<List<Contact>> {
+        override fun onFailure(call: Call<List<Contact>>, t: Throwable) {
+            Log.w(Api.TAG, t)
+        }
+
+        override fun onResponse(call: Call<List<Contact>>, response: Response<List<Contact>>) {
+            Log.d(Api.TAG, response.body()?.toString())
+            val body = response.body()
+            if (body !== null) {
+                contactsList.addAll(body)
+            }
+            contacts.postValue(contactsList)
+        }
+    }
+
     fun loadContacts() {
-        // TODO: load contacts
         contacts.postValue(contactsList)
+        Api.getInstance().getContacts(1, onContacts)
     }
 
     fun saveContacts() {
@@ -41,23 +61,10 @@ class ContactListModel : ViewModel() {
     }
 
     init {
-        for (i in 1..100) {
-            contactsList.add(
-                Contact(
-                    "test-id $i",
-                    "Имя $i",
-                    "+7 (900) 000-0$i",
-                    i.toFloat(),
-                    "Biograrphy",
-                    Temperament.Choleric,
-                    EducationPeriod(Date(), Date())
-                )
-            )
-        }
         loadContacts()
     }
 
     companion object {
-        val contactsList: ArrayList<Contact> = ArrayList()
+        var contactsList: ArrayList<Contact> = ArrayList()
     }
 }

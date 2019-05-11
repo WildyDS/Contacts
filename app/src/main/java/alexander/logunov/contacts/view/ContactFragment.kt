@@ -12,6 +12,7 @@ import alexander.logunov.contacts.R
 import alexander.logunov.contacts.data.model.Contact
 import alexander.logunov.contacts.databinding.ContactFragmentBinding
 import alexander.logunov.contacts.view_model.ContactViewModel
+import alexander.logunov.contacts.view_model.ContactViewModelFactory
 import android.text.util.Linkify
 import androidx.databinding.DataBindingUtil
 
@@ -37,14 +38,11 @@ class ContactFragment(val contact: Contact) : Fragment() {
                 supportActionBar?.setDisplayShowHomeEnabled(true)
             }
         }
-        binding.contact = contact
+        viewModel = ViewModelProviders.of(
+            this,
+            ContactViewModelFactory.getInstance(activity!!.application, contact)
+        ).get(ContactViewModel::class.java)
+        binding.viewModel = viewModel
         return binding.root
     }
-
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProviders.of(this).get(ContactViewModel::class.java)
-        // TODO: Use the ViewModel
-    }
-
 }

@@ -40,7 +40,7 @@ class ContactFragment(val contact: Contact) : Fragment() {
         }
         viewModel = ViewModelProviders.of(
             this,
-            ContactViewModelFactory.getInstance(activity!!.application, contact)
+            ContactViewModelFactory(activity!!.application, contact)
         ).get(ContactViewModel::class.java)
         binding.viewModel = viewModel
         return binding.root

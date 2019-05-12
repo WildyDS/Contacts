@@ -16,7 +16,7 @@ class Api(baseUrl: String) {
         const val TAG: String = "Api"
         private var selfInstance: Api? = null
         fun getInstance(): Api {
-            if (selfInstance === null) {
+            if (selfInstance == null) {
                 selfInstance = Api(BASE_URL)
             }
             return selfInstance as Api

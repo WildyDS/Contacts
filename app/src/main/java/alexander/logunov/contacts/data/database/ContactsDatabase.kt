@@ -1,11 +1,13 @@
 package alexander.logunov.contacts.data.database
 
 import alexander.logunov.contacts.data.dao.ContactDao
+import alexander.logunov.contacts.data.model.Contact
 import android.content.Context
+import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 
-// TODO: ContactsDatabase
+@Database(entities = [Contact::class], version = 1)
 abstract class ContactsDatabase : RoomDatabase() {
     abstract fun contactDao(): ContactDao
 
@@ -13,15 +15,22 @@ abstract class ContactsDatabase : RoomDatabase() {
 
         @Volatile private var INSTANCE: ContactsDatabase? = null
 
-        fun getInstance(context: Context): ContactsDatabase =
+        fun initialize(context: Context): ContactsDatabase =
             INSTANCE ?: synchronized(this) {
                 INSTANCE
                     ?: buildDatabase(context).also { INSTANCE = it }
             }
 
+        fun getInstance(): ContactsDatabase {
+            if (INSTANCE == null) {
+                throw RuntimeException("Contacts database is not initialized.")
+            }
+            return INSTANCE as ContactsDatabase
+        }
+
         private fun buildDatabase(context: Context) =
             Room.databaseBuilder(context.applicationContext,
-                ContactsDatabase::class.java, "Sample.db")
+                ContactsDatabase::class.java, "Contacts.db")
                 .build()
     }
 }

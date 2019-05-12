@@ -1,9 +1,8 @@
-package alexander.logunov.contacts
+package alexander.logunov.contacts.view
 
+import alexander.logunov.contacts.R
 import alexander.logunov.contacts.data.model.Contact
 import alexander.logunov.contacts.databinding.ActivityMainBinding
-import alexander.logunov.contacts.view.ContactFragment
-import alexander.logunov.contacts.view.ContactListFragment
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
@@ -25,7 +24,7 @@ class MainActivity : AppCompatActivity(), ContactListFragment.OnListFragmentInte
 
         if (savedInstanceState == null) {
             supportFragmentManager.beginTransaction()
-                .replace(R.id.container, ContactListFragment.newInstance())
+                .replace(activityMainBinding.container.id, ContactListFragment.newInstance())
                 .commitNow()
         }
     }

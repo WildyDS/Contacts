@@ -1,6 +1,5 @@
 package alexander.logunov.contacts.view
 
-import alexander.logunov.contacts.MainActivity
 import alexander.logunov.contacts.R
 import alexander.logunov.contacts.data.model.Contact
 import alexander.logunov.contacts.databinding.FragmentContactBinding

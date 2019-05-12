@@ -2,35 +2,37 @@ package alexander.logunov.contacts.data.model
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
+import androidx.room.Ignore
 import androidx.room.PrimaryKey
-import java.text.SimpleDateFormat
 import java.util.*
 
-@Entity
-enum class Temperament {
-    melancholic, phlegmatic, sanguine, choleric
-}
-
-@Entity
-data class EducationPeriod (
-    @ColumnInfo(name = "start") val start: Date,
-    @ColumnInfo(name = "end") val end: Date
-) {
-    override fun toString(): String {
-        return ("${SimpleDateFormat.getDateInstance().format(start)} - ${SimpleDateFormat.getDateInstance().format(end)}")
-    }
-}
-
-@Entity
+@Entity(tableName = "Contacts")
 data class Contact (
-    @PrimaryKey val id: String,
-    @ColumnInfo(name = "name") val name: String,
-    @ColumnInfo(name = "phone") val phone: String,
-    @ColumnInfo(name = "height") val height: Float,
-    @ColumnInfo(name = "biography") val biography: String,
-    @ColumnInfo(name = "temperament") val temperament: Temperament,
-    @ColumnInfo(name = "education_period") val educationPeriod: EducationPeriod
+    @PrimaryKey var id: String,
+    @ColumnInfo(name = "name") var name: String,
+    @ColumnInfo(name = "phone") var phone: String,
+    @ColumnInfo(name = "height") var height: Float,
+    @ColumnInfo(name = "biography") var biography: String,
+    @ColumnInfo(name = "temperament") var temperament: String,
+    @Ignore var educationPeriod: EducationPeriod
 ) {
+
+    @ColumnInfo(name = "education_period_start") var educationPeriodStart: Long = educationPeriod.start.time
+    @ColumnInfo(name = "education_period_end") var educationPeriodEnd: Long = educationPeriod.end.time
+    @ColumnInfo(name =  "created_at") var createdAt: Long = Date().time
+
+    constructor(
+        id: String,
+        name: String,
+        phone: String,
+        height: Float,
+        biography: String,
+        temperament: String,
+        educationPeriodStart: Long,
+        educationPeriodEnd: Long,
+        createdAt: Long
+    ) : this(id, name, phone, height, biography, temperament, EducationPeriod(Date(educationPeriodStart), Date(educationPeriodEnd)))
+
     override fun toString(): String {
         return "{\n" +
                 "name: $name,\n" +
@@ -42,12 +44,3 @@ data class Contact (
                 "}"
     }
 }
-
-/*
-id (string) — ID контакта
-name (string) — Имя человека
-height (float) — Рост человека
-biography (string) — Биография человека
-temperament (enum) — Темперамент человека (melancholic, phlegmatic, sanguine, choleric)
-educationPeriod (object) — Период прохождения учебы. Состоит из дат start и end.
- */

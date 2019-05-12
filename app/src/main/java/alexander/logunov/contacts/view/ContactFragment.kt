@@ -13,7 +13,6 @@ import alexander.logunov.contacts.data.model.Contact
 import alexander.logunov.contacts.databinding.ContactFragmentBinding
 import alexander.logunov.contacts.view_model.ContactViewModel
 import alexander.logunov.contacts.view_model.ContactViewModelFactory
-import android.text.util.Linkify
 import androidx.databinding.DataBindingUtil
 
 class ContactFragment(val contact: Contact) : Fragment() {
@@ -27,7 +26,8 @@ class ContactFragment(val contact: Contact) : Fragment() {
     private lateinit var viewModel: ContactViewModel
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         binding = DataBindingUtil.inflate(inflater, R.layout.contact_fragment, container, false)
@@ -42,6 +42,7 @@ class ContactFragment(val contact: Contact) : Fragment() {
             this,
             ContactViewModelFactory(activity!!.application, contact)
         ).get(ContactViewModel::class.java)
+        binding.lifecycleOwner = this
         binding.viewModel = viewModel
         return binding.root
     }

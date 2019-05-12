@@ -1,6 +1,7 @@
 package alexander.logunov.contacts.view
 
 import alexander.logunov.contacts.adapter.ContactsRecyclerAdapter
+import alexander.logunov.contacts.adapter.setIsRefreshing
 import alexander.logunov.contacts.data.model.Contact
 import alexander.logunov.contacts.databinding.FragmentContactsListBinding
 import alexander.logunov.contacts.view_model.ContactListModel
@@ -13,10 +14,7 @@ import android.view.ViewGroup
 import androidx.appcompat.widget.SearchView
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import java.util.*
 import kotlin.collections.ArrayList
-import kotlin.concurrent.schedule
 
 /**
  * A fragment representing a list of Items.
@@ -29,21 +27,6 @@ class ContactsFragment : androidx.fragment.app.Fragment() {
     private lateinit var contactsAdapter: ContactsRecyclerAdapter
 
     private var binding: FragmentContactsListBinding? = null
-
-    private val refreshListener: SwipeRefreshLayout.OnRefreshListener = SwipeRefreshLayout.OnRefreshListener {
-        viewModel.clearContacts()
-        Timer().schedule(1000) {
-            viewModel.loadContacts()
-            // TODO: в биндинг
-            with (binding) {
-                if (this !== null) {
-                    root.post {
-                        swipeRefresh.isRefreshing = false
-                    }
-                }
-            }
-        }
-    }
 
     private var listener: OnListFragmentInteractionListener? = null
 
@@ -86,7 +69,6 @@ class ContactsFragment : androidx.fragment.app.Fragment() {
             container,
             false
         )
-        binding!!.swipeRefresh.setOnRefreshListener(refreshListener)
         with(binding!!.recycler) {
             layoutManager = LinearLayoutManager(context)
             adapter = contactsAdapter
@@ -94,6 +76,8 @@ class ContactsFragment : androidx.fragment.app.Fragment() {
         with(binding!!.search) {
             setOnQueryTextListener(queryChangeListener)
         }
+        binding!!.lifecycleOwner = this
+        binding!!.viewModel = viewModel
         return binding!!.root
     }
 

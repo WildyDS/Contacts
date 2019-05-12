@@ -5,6 +5,7 @@ import alexander.logunov.contacts.data.model.Temperament
 import android.view.View
 import android.widget.TextView
 import androidx.databinding.BindingAdapter
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 
 @BindingAdapter("android:text")
 fun TextView.setText(educationPeriod: EducationPeriod) {
@@ -14,4 +15,23 @@ fun TextView.setText(educationPeriod: EducationPeriod) {
 @BindingAdapter("android:text")
 fun TextView.setText(temperament: Temperament) {
     text = temperament.toString()
+}
+
+@BindingAdapter("app:visibility")
+fun View.setVisibility(isVisible: Boolean) {
+    visibility = if (isVisible) {
+        View.VISIBLE
+    } else {
+        View.GONE
+    }
+}
+
+@BindingAdapter("app:isRefreshing")
+fun SwipeRefreshLayout.setIsRefreshing(refreshing: Boolean) {
+    isRefreshing = refreshing
+}
+
+@BindingAdapter("app:onRefresh")
+fun SwipeRefreshLayout.setOnRefreshListener(refreshListener: SwipeRefreshLayout.OnRefreshListener) {
+    setOnRefreshListener(refreshListener)
 }

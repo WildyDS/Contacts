@@ -2,7 +2,7 @@ package alexander.logunov.contacts.adapter
 
 import alexander.logunov.contacts.data.model.Contact
 import alexander.logunov.contacts.databinding.ContactBinding
-import alexander.logunov.contacts.view.ContactsFragment.OnListFragmentInteractionListener
+import alexander.logunov.contacts.view.ContactListFragment.OnListFragmentInteractionListener
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup

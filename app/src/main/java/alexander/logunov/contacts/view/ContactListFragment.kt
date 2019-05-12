@@ -1,10 +1,9 @@
 package alexander.logunov.contacts.view
 
 import alexander.logunov.contacts.adapter.ContactsRecyclerAdapter
-import alexander.logunov.contacts.adapter.setIsRefreshing
 import alexander.logunov.contacts.data.model.Contact
-import alexander.logunov.contacts.databinding.FragmentContactsListBinding
-import alexander.logunov.contacts.view_model.ContactListModel
+import alexander.logunov.contacts.databinding.FragmentContactListBinding
+import alexander.logunov.contacts.view_model.ContactListViewModel
 import android.content.Context
 import android.os.Bundle
 import android.util.Log
@@ -14,19 +13,18 @@ import android.view.ViewGroup
 import androidx.appcompat.widget.SearchView
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
-import kotlin.collections.ArrayList
 
 /**
- * A fragment representing a list of Items.
+ * A fragment representing a list of Contacts.
  * Activities containing this fragment MUST implement the
- * [ContactsFragment.OnListFragmentInteractionListener] interface.
+ * [ContactListFragment.OnListFragmentInteractionListener] interface.
  */
-class ContactsFragment : androidx.fragment.app.Fragment() {
-    private lateinit var viewModel: ContactListModel
+class ContactListFragment : androidx.fragment.app.Fragment() {
+    private lateinit var viewModel: ContactListViewModel
 
     private lateinit var contactsAdapter: ContactsRecyclerAdapter
 
-    private var binding: FragmentContactsListBinding? = null
+    private var binding: FragmentContactListBinding? = null
 
     private var listener: OnListFragmentInteractionListener? = null
 
@@ -49,7 +47,7 @@ class ContactsFragment : androidx.fragment.app.Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewModel = ViewModelProviders.of(this).get(ContactListModel::class.java)
+        viewModel = ViewModelProviders.of(this).get(ContactListViewModel::class.java)
         contactsAdapter = ContactsRecyclerAdapter(
             ArrayList(),
             listener
@@ -64,7 +62,7 @@ class ContactsFragment : androidx.fragment.app.Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = FragmentContactsListBinding.inflate(
+        binding = FragmentContactListBinding.inflate(
             inflater,
             container,
             false
@@ -103,7 +101,7 @@ class ContactsFragment : androidx.fragment.app.Fragment() {
 
     companion object {
         @JvmStatic
-        fun newInstance() = ContactsFragment()
-        const val TAG: String = "ContactsFragment"
+        fun newInstance() = ContactListFragment()
+        const val TAG: String = "ContactListFragment"
     }
 }

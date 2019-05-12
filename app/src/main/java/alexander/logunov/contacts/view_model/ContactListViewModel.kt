@@ -10,11 +10,8 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import java.util.*
-import kotlin.collections.ArrayList
-import kotlin.concurrent.schedule
 
-class ContactListModel : ViewModel() {
+class ContactListViewModel : ViewModel() {
     val contacts: MutableLiveData<List<Contact>?> = MutableLiveData()
 
     val isLoading: MutableLiveData<Boolean> = MutableLiveData()
@@ -31,10 +28,8 @@ class ContactListModel : ViewModel() {
 
     fun refreshContacts() {
         isRefreshing.postValue(true)
-        Timer().schedule(1000) {
-            clearContacts()
-            loadContacts()
-        }
+        clearContacts()
+        loadContacts()
     }
 
     private val handleContactsLoad = object : Callback<List<Contact>> {
@@ -58,6 +53,8 @@ class ContactListModel : ViewModel() {
     fun loadContacts() {
         isLoading.postValue(true)
         Api.getInstance().getContacts(1, handleContactsLoad)
+        // Api.getInstance().getContacts(2, handleContactsLoad)
+        // Api.getInstance().getContacts(3, handleContactsLoad)
     }
 
     fun saveContacts() {

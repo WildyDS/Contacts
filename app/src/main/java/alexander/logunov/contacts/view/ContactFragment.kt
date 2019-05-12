@@ -1,23 +1,22 @@
 package alexander.logunov.contacts.view
 
 import alexander.logunov.contacts.MainActivity
-import androidx.lifecycle.ViewModelProviders
+import alexander.logunov.contacts.R
+import alexander.logunov.contacts.data.model.Contact
+import alexander.logunov.contacts.databinding.FragmentContactBinding
+import alexander.logunov.contacts.view_model.ContactViewModel
+import alexander.logunov.contacts.view_model.ContactViewModelFactory
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-
-import alexander.logunov.contacts.R
-import alexander.logunov.contacts.data.model.Contact
-import alexander.logunov.contacts.databinding.ContactFragmentBinding
-import alexander.logunov.contacts.view_model.ContactViewModel
-import alexander.logunov.contacts.view_model.ContactViewModelFactory
 import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProviders
 
 class ContactFragment(val contact: Contact) : Fragment() {
 
-    private lateinit var binding: ContactFragmentBinding
+    private lateinit var binding: FragmentContactBinding
 
     companion object {
         fun newInstance(contact: Contact) = ContactFragment(contact)
@@ -30,7 +29,7 @@ class ContactFragment(val contact: Contact) : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = DataBindingUtil.inflate(inflater, R.layout.contact_fragment, container, false)
+        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_contact, container, false)
         if (context is MainActivity) {
             with (context as MainActivity) {
                 setSupportActionBar(binding.toolbar)

@@ -3,14 +3,14 @@ package alexander.logunov.contacts
 import alexander.logunov.contacts.data.model.Contact
 import alexander.logunov.contacts.databinding.ActivityMainBinding
 import alexander.logunov.contacts.view.ContactFragment
-import alexander.logunov.contacts.view.ContactsFragment
+import alexander.logunov.contacts.view.ContactListFragment
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.FragmentTransaction
 
-class MainActivity : AppCompatActivity(), ContactsFragment.OnListFragmentInteractionListener {
+class MainActivity : AppCompatActivity(), ContactListFragment.OnListFragmentInteractionListener {
     companion object {
         const val TAG: String = "MainActivity"
     }
@@ -25,7 +25,7 @@ class MainActivity : AppCompatActivity(), ContactsFragment.OnListFragmentInterac
 
         if (savedInstanceState == null) {
             supportFragmentManager.beginTransaction()
-                .replace(R.id.container, ContactsFragment.newInstance())
+                .replace(R.id.container, ContactListFragment.newInstance())
                 .commitNow()
         }
     }

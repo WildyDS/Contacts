@@ -3,9 +3,9 @@
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
-        tools:context=".view.ContactsFragment">
+        tools:context=".view.ContactListFragment">
     <data>
-        <variable name="viewModel" type="alexander.logunov.contacts.view_model.ContactListModel"/>
+        <variable name="viewModel" type="alexander.logunov.contacts.view_model.ContactListViewModel"/>
     </data>
     <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"

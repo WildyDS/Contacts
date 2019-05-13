@@ -5,7 +5,6 @@ import alexander.logunov.contacts.data.model.Contact
 import alexander.logunov.contacts.network.Api
 import android.app.Application
 import android.util.Log
-import android.widget.Toast
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -19,10 +18,13 @@ import retrofit2.Response
 import java.util.*
 import kotlin.collections.ArrayList
 
+// TODO: почистить все лишние вызовы снекбара
 class ContactListViewModel(application: Application) : AndroidViewModel(application) {
     private val disposable = CompositeDisposable()
 
     val contacts: MutableLiveData<List<Contact>?> = MutableLiveData()
+
+    val snackbarText: MutableLiveData<String> = MutableLiveData()
 
     val isLoading: MutableLiveData<Boolean> = MutableLiveData()
 
@@ -47,11 +49,7 @@ class ContactListViewModel(application: Application) : AndroidViewModel(applicat
             Log.w(TAG, t)
             isLoading.postValue(false)
             isRefreshing.postValue(false)
-            Toast.makeText(
-                getApplication(),
-                "Ошибка сети",
-                Toast.LENGTH_LONG
-            ).show()
+            snackbarText.postValue("Ошибка сети")
         }
 
         override fun onResponse(call: Call<List<Contact>>, response: Response<List<Contact>>) {
@@ -88,21 +86,13 @@ class ContactListViewModel(application: Application) : AndroidViewModel(applicat
                     val count = it.count()
                     val last = it.last()
                     if (count > 1 && Date(last.createdAt + 1000 * 60).after(Date())) {
-                        Toast.makeText(
-                            getApplication(),
-                            "Загрузил из БД ${count} контактов, дата создания последнего: ${Date(last.createdAt)}",
-                            Toast.LENGTH_LONG
-                        ).show()
+                        snackbarText.postValue("Загрузил из БД ${count} контактов, дата создания последнего: ${Date(last.createdAt)}")
                         isLoading.postValue(false)
                         isRefreshing.postValue(false)
                         Log.d(TAG, "Contacts loaded from DB")
                     } else {
                         Log.d(TAG, "Loading from GitHub")
-                        Toast.makeText(
-                            getApplication(),
-                            "Обновляю БД, было ${count} записей",
-                            Toast.LENGTH_LONG
-                        ).show()
+                        snackbarText.postValue("Обновляю БД, было ${count} записей")
                         loadContacts()
                     }
 
@@ -135,6 +125,7 @@ class ContactListViewModel(application: Application) : AndroidViewModel(applicat
     }
 
     init {
+        snackbarText.postValue(null)
         isLoading.postValue(false)
         isRefreshing.postValue(false)
         contacts.postValue(contactsList)

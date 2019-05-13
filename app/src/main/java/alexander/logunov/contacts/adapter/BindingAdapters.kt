@@ -6,6 +6,7 @@ import android.view.View
 import android.widget.TextView
 import androidx.databinding.BindingAdapter
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import com.google.android.material.snackbar.Snackbar
 
 @BindingAdapter("android:text")
 fun TextView.setText(educationPeriod: EducationPeriod) {
@@ -34,4 +35,11 @@ fun SwipeRefreshLayout.setIsRefreshing(refreshing: Boolean) {
 @BindingAdapter("app:onRefresh")
 fun SwipeRefreshLayout.setOnRefreshListener(refreshListener: SwipeRefreshLayout.OnRefreshListener) {
     setOnRefreshListener(refreshListener)
+}
+
+@BindingAdapter("app:snackbarLong")
+fun View.showSnackBar(text: String?) {
+    if (text != null) {
+        Snackbar.make(this, text, Snackbar.LENGTH_LONG).show()
+    }
 }

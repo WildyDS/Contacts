@@ -3,7 +3,10 @@ package alexander.logunov.contacts.view_model
 import alexander.logunov.contacts.data.database.ContactsDatabase
 import alexander.logunov.contacts.data.model.Contact
 import alexander.logunov.contacts.network.Api
+import android.app.Application
 import android.util.Log
+import android.widget.Toast
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -17,7 +20,7 @@ import retrofit2.Response
 import java.util.*
 import kotlin.collections.ArrayList
 
-class ContactListViewModel : ViewModel() {
+class ContactListViewModel(application: Application) : AndroidViewModel(application) {
     private val disposable = CompositeDisposable()
 
     val contacts: MutableLiveData<List<Contact>?> = MutableLiveData()
@@ -45,14 +48,13 @@ class ContactListViewModel : ViewModel() {
             Log.w(TAG, t)
             isLoading.postValue(false)
             isRefreshing.postValue(false)
+            Toast.makeText(getApplication(), "Ошибка сети", Toast.LENGTH_LONG).show()
         }
 
         override fun onResponse(call: Call<List<Contact>>, response: Response<List<Contact>>) {
             val body = response.body()
             if (body !== null) {
-                contactsList.addAll(body)
                 saveContactsToDB(body)
-                contacts.postValue(body)
             }
             isLoading.postValue(false)
             isRefreshing.postValue(false)
@@ -65,7 +67,9 @@ class ContactListViewModel : ViewModel() {
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
-                    { Log.d(TAG, "Contacts saved to DB") },
+                    {
+                        Log.d(TAG, "Contacts saved to DB")
+                    },
                     { error -> Log.e(TAG, "Unable to save contacts", error) }
                 )
         )
@@ -78,22 +82,21 @@ class ContactListViewModel : ViewModel() {
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(
                 {
+                    contactsList.addAll(it)
+                    contacts.postValue(contactsList)
                     if (it.count() > 1 && Date(it.last().createdAt + 1000 * 60).after(Date())) {
-                        contactsList.addAll(it)
-                        contacts.postValue(contactsList)
+                        Toast.makeText(getApplication(), "Загрузил из БД, дата создания последнего: ${Date(it.last().createdAt)}", Toast.LENGTH_LONG).show()
                         isLoading.postValue(false)
                         isRefreshing.postValue(false)
                         Log.d(TAG, "Contacts loaded from DB")
                     } else {
                         Log.d(TAG, "Loading from GitHub")
+                        Toast.makeText(getApplication(), "Загружаю из гитхаба, контактов в БД: ${it.count()}", Toast.LENGTH_LONG).show()
                         loadContacts()
                     }
 
                 },
-                { error ->
-                    Log.e(TAG, "Unable to load contacts from DB", error)
-                    loadContacts()
-                }
+                { error -> Log.e(TAG, "Unable to load contacts from DB", error) }
             ))
     }
 

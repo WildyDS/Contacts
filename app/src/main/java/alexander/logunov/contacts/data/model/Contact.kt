@@ -31,7 +31,9 @@ data class Contact (
         educationPeriodStart: Long,
         educationPeriodEnd: Long,
         createdAt: Long
-    ) : this(id, name, phone, height, biography, temperament, EducationPeriod(Date(educationPeriodStart), Date(educationPeriodEnd)))
+    ) : this(id, name, phone, height, biography, temperament, EducationPeriod(Date(educationPeriodStart), Date(educationPeriodEnd))){
+        this.createdAt = createdAt
+    }
 
     override fun toString(): String {
         return "{\n" +

@@ -115,6 +115,7 @@ class ContactListViewModel(application: Application) : AndroidViewModel(applicat
 
     // TODO: может debounce?
     // TODO: переделать Mutable на Computable, а то фильтр страдает
+    // TODO: починить поиск по имени
     fun filterByNameOrPhone(query: String?)  {
         if (query == null || query.isEmpty()) {
             contacts.postValue(contactsList)

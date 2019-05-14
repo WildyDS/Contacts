@@ -2,11 +2,15 @@ package alexander.logunov.contacts.adapter
 
 import alexander.logunov.contacts.data.model.EducationPeriod
 import alexander.logunov.contacts.data.model.Temperament
+import android.util.Log
 import android.view.View
 import android.widget.TextView
 import androidx.databinding.BindingAdapter
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.material.snackbar.Snackbar
+import java.lang.Exception
+
+const val TAG = "BindingAdapter"
 
 @BindingAdapter("android:text")
 fun TextView.setText(educationPeriod: EducationPeriod) {
@@ -40,7 +44,10 @@ fun SwipeRefreshLayout.setOnRefreshListener(refreshListener: SwipeRefreshLayout.
 @BindingAdapter("app:snackbarLong")
 fun View.showSnackBar(text: String?) {
     if (text != null) {
-        // TODO: фикс крашей при смене экранов
-        Snackbar.make(this, text, Snackbar.LENGTH_LONG).show()
+        try {
+            Snackbar.make(this, text, Snackbar.LENGTH_LONG).show()
+        } catch (e: RuntimeException) {
+            Log.w(TAG, "Can not show snackbar!", e)
+        }
     }
 }

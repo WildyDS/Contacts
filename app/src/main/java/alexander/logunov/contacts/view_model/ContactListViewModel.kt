@@ -18,7 +18,6 @@ import retrofit2.Response
 import java.util.*
 import kotlin.collections.ArrayList
 
-// TODO: почистить все лишние вызовы снекбара
 class ContactListViewModel(application: Application) : AndroidViewModel(application) {
     private val disposable = CompositeDisposable()
 
@@ -86,13 +85,11 @@ class ContactListViewModel(application: Application) : AndroidViewModel(applicat
                     val count = it.count()
                     val last = it.last()
                     if (count > 1 && Date(last.createdAt + 1000 * 60).after(Date())) {
-                        snackbarText.postValue("Загрузил из БД ${count} контактов, дата создания последнего: ${Date(last.createdAt)}")
                         isLoading.postValue(false)
                         isRefreshing.postValue(false)
                         Log.d(TAG, "Contacts loaded from DB")
                     } else {
                         Log.d(TAG, "Loading from GitHub")
-                        snackbarText.postValue("Обновляю БД, было ${count} записей")
                         loadContacts()
                     }
 
@@ -125,7 +122,7 @@ class ContactListViewModel(application: Application) : AndroidViewModel(applicat
     }
 
     init {
-        snackbarText.postValue(null)
+        snackbarText.observeForever{ snackbarText.postValue(null)}
         isLoading.postValue(false)
         isRefreshing.postValue(false)
         contacts.postValue(contactsList)

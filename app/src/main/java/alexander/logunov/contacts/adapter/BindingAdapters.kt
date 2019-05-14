@@ -40,6 +40,7 @@ fun SwipeRefreshLayout.setOnRefreshListener(refreshListener: SwipeRefreshLayout.
 @BindingAdapter("app:snackbarLong")
 fun View.showSnackBar(text: String?) {
     if (text != null) {
+        // TODO: фикс крашей при смене экранов
         Snackbar.make(this, text, Snackbar.LENGTH_LONG).show()
     }
 }

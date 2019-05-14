@@ -12,9 +12,6 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -43,24 +40,6 @@ class ContactListViewModel(application: Application) : AndroidViewModel(applicat
         loadContacts()
     }
 
-    private val handleContactsLoad = object : Callback<List<Contact>> {
-        override fun onFailure(call: Call<List<Contact>>, t: Throwable) {
-            Log.w(TAG, t)
-            isLoading.postValue(false)
-            isRefreshing.postValue(false)
-            snackbarText.postValue("Ошибка сети")
-        }
-
-        override fun onResponse(call: Call<List<Contact>>, response: Response<List<Contact>>) {
-            val body = response.body()
-            if (body !== null) {
-                saveContactsToDB(body)
-            }
-            isLoading.postValue(false)
-            isRefreshing.postValue(false)
-        }
-    }
-
     fun saveContactsToDB(contacts: List<Contact>) {
         disposable.add(
             ContactsDatabase.getInstance().contactDao().insertAll(contacts)
@@ -84,9 +63,9 @@ class ContactListViewModel(application: Application) : AndroidViewModel(applicat
                     contacts.postValue(contactsList)
                     val count = it.count()
                     val last = it.last()
+                    isLoading.postValue(false)
+                    isRefreshing.postValue(false)
                     if (count > 1 && Date(last.createdAt + 1000 * 60).after(Date())) {
-                        isLoading.postValue(false)
-                        isRefreshing.postValue(false)
                         Log.d(TAG, "Contacts loaded from DB")
                     } else {
                         Log.d(TAG, "Loading from GitHub")
@@ -94,24 +73,55 @@ class ContactListViewModel(application: Application) : AndroidViewModel(applicat
                     }
 
                 },
-                { error -> Log.e(TAG, "Unable to load contacts from DB", error) }
+                { error ->
+                    Log.e(TAG, "Unable to load contacts from DB", error)
+                    snackbarText.postValue("Ошибка БД")
+                }
             ))
     }
 
     fun loadContacts() {
         isLoading.postValue(true)
-        Api.getInstance().getContacts(1, handleContactsLoad)
-        Api.getInstance().getContacts(2, handleContactsLoad)
-        Api.getInstance().getContacts(3, handleContactsLoad)
+        val list: ArrayList<Contact> = ArrayList()
+        disposable.add(Api.getInstance().getContacts(1)
+            .flatMap {
+                    page1 ->
+                list.addAll(page1)
+                Api.getInstance().getContacts(2)
+            }
+            .flatMap { page2 ->
+                list.addAll(page2)
+                Api.getInstance().getContacts(3)
+            }
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread()).subscribe(
+                {
+                    list.addAll(it)
+                    saveContactsToDB(list)
+                    isLoading.postValue(false)
+                    isRefreshing.postValue(false)
+                    Log.d(TAG, "Contacts loaded from GitHub")
+
+                },
+                { error ->
+                    Log.e(TAG, "Unable to load contacts from GitHub", error)
+                    snackbarText.postValue("Ошибка сети")
+                }
+            )
+        )
     }
 
-    fun filterByNameOrPhone(query: String)  {
-        if (query.isEmpty()) {
+    private val phoneRegex = "[^0-9]".toRegex()
+
+    // TODO: может debounce?
+    // TODO: переделать Mutable на Computable, а то фильтр страдает
+    fun filterByNameOrPhone(query: String?)  {
+        if (query == null || query.isEmpty()) {
             contacts.postValue(contactsList)
         } else {
-            // TODO: регистронезависимость, отфильтровать скобки и другие лишние символы
-            contacts.postValue(contactsList.filter {
-                    contact  -> contact.name.contains(query) || contact.phone.contains(query)
+            contacts.postValue(contactsList.filter { contact  ->
+                contact.name.toLowerCase().contains(query.toLowerCase()) ||
+                        contact.phone.replace(phoneRegex, "").contains(query.replace(phoneRegex, ""))
             })
         }
     }

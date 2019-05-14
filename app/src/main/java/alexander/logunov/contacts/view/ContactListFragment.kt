@@ -52,7 +52,7 @@ class ContactListFragment : androidx.fragment.app.Fragment() {
             ArrayList(),
             listener
         )
-        viewModel.getContacts().observe(
+        viewModel.contacts.observe(
             this,
             contactsAdapter.contactsChangeHandler
         )

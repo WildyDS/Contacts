@@ -3,8 +3,9 @@ package alexander.logunov.contacts.network
 import alexander.logunov.contacts.data.model.Contact
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
-import retrofit2.Callback
+import io.reactivex.Flowable
 import retrofit2.Retrofit
+import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.moshi.MoshiConverterFactory
 import java.util.*
 
@@ -28,14 +29,15 @@ class Api(baseUrl: String) {
         .add(Date::class.java, DateAdapter())
         .build()
 
-    private val service: ContactsService = Retrofit.Builder()
+    private val contactsService: ContactsService = Retrofit.Builder()
         .baseUrl(baseUrl)
+        .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
         .addConverterFactory(MoshiConverterFactory.create(moshi))
         .build()
         .create(ContactsService::class.java)
 
 
-    fun getContacts(page: Number, handler: Callback<List<Contact>>) {
-        service.getContacts(page).enqueue(handler)
+    fun getContacts(page: Number): Flowable<List<Contact>> {
+        return contactsService.getContacts(page)
     }
 }

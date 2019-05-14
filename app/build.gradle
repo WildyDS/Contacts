@@ -38,6 +38,8 @@ dependencies {
 
     implementation 'io.reactivex.rxjava2:rxandroid:2.0.1'
 
+    implementation 'android.arch.lifecycle:reactivestreams:1.1.1'
+
     def room_version = "2.1.0-beta01"
     implementation "androidx.room:room-runtime:$room_version"
     kapt "androidx.room:room-compiler:$room_version"
@@ -46,7 +48,9 @@ dependencies {
     // optional - RxJava support for Room
     implementation "androidx.room:room-rxjava2:$room_version"
 
-    implementation 'com.squareup.retrofit2:retrofit:2.4.0'
-    implementation 'com.squareup.retrofit2:converter-moshi:2.4.0'
+    def retrofit_version = "2.5.0"
+    implementation "com.squareup.retrofit2:retrofit:$retrofit_version"
+    implementation "com.squareup.retrofit2:converter-moshi:$retrofit_version"
+    implementation "com.squareup.retrofit2:adapter-rxjava2:$retrofit_version"
     implementation 'com.squareup.moshi:moshi-kotlin:1.8.0'
 }

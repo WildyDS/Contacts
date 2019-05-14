@@ -13,6 +13,9 @@ interface ContactDao {
     @Query("SELECT * FROM Contacts")
     fun getAll(): Flowable<List<Contact>>
 
+    @Query("SELECT * FROM Contacts WHERE name LIKE :query OR phone LIKE :query")
+    fun filter(query: String): Flowable<List<Contact>>
+
     @Insert(onConflict = REPLACE)
     fun insert(contact: Contact)
 

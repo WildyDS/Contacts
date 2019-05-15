@@ -45,7 +45,7 @@ class ContactListViewModel(application: Application) : AndroidViewModel(applicat
     fun refreshContacts() {
         isRefreshing.postValue(true)
         clearContacts()
-        loadContacts()
+        loadContacts(true)
     }
 
     fun saveContactsToDB(contacts: List<Contact>) {
@@ -60,20 +60,20 @@ class ContactListViewModel(application: Application) : AndroidViewModel(applicat
         )
     }
 
-    fun loadFromDB(allowGithubLoading: Boolean = true) {
+    fun loadFromDB(allowGithub: Boolean = true) {
         isLoading.postValue(true)
         disposable.add(ContactsDatabase.getInstance().contactDao().getAll()
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(
                 {
-                    if (allowGithubLoading && it.isEmpty()) {
+                    if (allowGithub && it.isEmpty()) {
                         Log.d(TAG, "Loading from GitHub")
                         loadContacts()
                     } else {
                         contactsList.addAll(it)
                         contacts.postValue(contactsList)
-                        if (Date(it.last().createdAt + 60000).before(Date())) {
+                        if (allowGithub && Date(it.last().createdAt + 60000).before(Date())) {
                             loadContacts()
                         } else {
                             isLoading.postValue(false)
@@ -83,45 +83,51 @@ class ContactListViewModel(application: Application) : AndroidViewModel(applicat
                 },
                 { error ->
                     Log.e(TAG, "Unable to load contacts from DB", error)
-                    snackbarText.postValue("Ошибка БД")
+                    snackbarText.postValue("Ошибка БД: ${error.localizedMessage}")
                     isLoading.postValue(false)
                     isRefreshing.postValue(false)
-                    loadContacts()
+                    if (allowGithub) {
+                        loadContacts()
+                    }
                 }
             ))
     }
 
-    fun loadContacts() {
+    fun loadContacts(allowDB: Boolean = false) {
         isLoading.postValue(true)
         val list: ArrayList<Contact> = ArrayList()
         disposable.add(
             Api.getInstance().getContacts(1)
-            .flatMap {
-                    page1 ->
-                list.addAll(page1)
-                Api.getInstance().getContacts(2)
-            }
-            .flatMap { page2 ->
-                list.addAll(page2)
-                Api.getInstance().getContacts(3)
-            }
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread()).subscribe(
-                {
-                    list.addAll(it)
-                    saveContactsToDB(list)
-                    isLoading.postValue(false)
-                    isRefreshing.postValue(false)
-                    Log.d(TAG, "Contacts loaded from GitHub")
-
-                },
-                { error ->
-                    Log.e(TAG, "Unable to load contacts from GitHub", error)
-                    snackbarText.postValue("Ошибка сети")
-                    isLoading.postValue(false)
-                    isRefreshing.postValue(false)
+                .flatMap { page1 ->
+                    list.addAll(page1)
+                    Api.getInstance().getContacts(2)
                 }
-            )
+                .flatMap { page2 ->
+                    list.addAll(page2)
+                    Api.getInstance().getContacts(3)
+                }
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                    {
+                        list.addAll(it)
+                        saveContactsToDB(list)
+                        isLoading.postValue(false)
+                        isRefreshing.postValue(false)
+                        Log.d(TAG, "Contacts loaded from GitHub")
+
+                    },
+                    { error ->
+                        Log.e(TAG, "Unable to load contacts from GitHub", error)
+                        snackbarText.postValue("Ошибка сети: ${error.localizedMessage}")
+                        if (allowDB) {
+                            loadFromDB(false)
+                        } else {
+                            isLoading.postValue(false)
+                            isRefreshing.postValue(false)
+                        }
+                    }
+                )
         )
     }
 
@@ -143,7 +149,6 @@ class ContactListViewModel(application: Application) : AndroidViewModel(applicat
     }
 
     init {
-        snackbarText.observeForever{ snackbarText.postValue(null)}
         searchQuery.observeForever { q -> filterByNameOrPhone(q) }
         loadFromDB()
     }

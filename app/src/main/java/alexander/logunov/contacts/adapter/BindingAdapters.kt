@@ -11,6 +11,7 @@ import androidx.databinding.BindingAdapter
 import androidx.databinding.InverseBindingAdapter
 import androidx.databinding.InverseBindingListener
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.material.snackbar.Snackbar
 
@@ -51,10 +52,13 @@ fun SwipeRefreshLayout.setOnRefreshListener(refreshListener: SwipeRefreshLayout.
 }
 
 @BindingAdapter("app:snackbarLong")
-fun View.showSnackBar(text: String?) {
-    if (text != null) {
+fun View.showSnackBar(text: MutableLiveData<String?>) {
+    Log.d(TAG, "showSnackBar: ${text.value}")
+
+    if (text.value != null) {
         try {
-            Snackbar.make(this, text, Snackbar.LENGTH_LONG).show()
+            text.postValue(null)
+            Snackbar.make(this, text.value!!, Snackbar.LENGTH_LONG).show()
         } catch (e: RuntimeException) {
             Log.w(TAG, "Can not show snackbar!", e)
         }

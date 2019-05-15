@@ -8,7 +8,6 @@ import android.widget.TextView
 import androidx.databinding.BindingAdapter
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.material.snackbar.Snackbar
-import java.lang.Exception
 
 const val TAG = "BindingAdapter"
 

@@ -18,7 +18,7 @@ import kotlin.collections.ArrayList
 class ContactListViewModel(application: Application) : AndroidViewModel(application) {
     private val disposable = CompositeDisposable()
 
-    val searchQuery: MutableLiveData<String> = MutableLiveData()
+    val searchQuery: MutableLiveData<String?> = MutableLiveData()
 
     val contacts: MutableLiveData<List<Contact>?> = MutableLiveData()
 
@@ -118,7 +118,7 @@ class ContactListViewModel(application: Application) : AndroidViewModel(applicat
     // TODO: может debounce?
     // TODO: переделать Mutable на Computable, а то фильтр страдает
     // TODO: починить поиск по имени
-    fun filterByNameOrPhone(query: String?)  {
+    fun filterByNameOrPhone(query: String?) {
         if (query == null || query.isEmpty()) {
             contacts.postValue(contactsList)
         } else {
@@ -131,7 +131,7 @@ class ContactListViewModel(application: Application) : AndroidViewModel(applicat
 
     val refreshListener: SwipeRefreshLayout.OnRefreshListener = SwipeRefreshLayout.OnRefreshListener {
         refreshContacts()
-        // TODO: очистить строку поиска
+        searchQuery.postValue(null)
     }
 
     init {
@@ -140,7 +140,7 @@ class ContactListViewModel(application: Application) : AndroidViewModel(applicat
         isRefreshing.postValue(false)
         contacts.postValue(contactsList)
         loadFromDB()
-        searchQuery.observeForever { q -> filterByNameOrPhone(q)}
+        searchQuery.observeForever { q -> filterByNameOrPhone(q) }
     }
 
     companion object {

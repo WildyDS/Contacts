@@ -29,7 +29,7 @@
                     android:layout_margin="8dp"
                     android:background="@drawable/rounded_background"
                     app:queryHint="@string/search"
-                    app:queryListener="@{viewModel.searchQuery}"
+                    app:query="@={viewModel.searchQuery}"
             />
         </androidx.appcompat.widget.Toolbar>
 

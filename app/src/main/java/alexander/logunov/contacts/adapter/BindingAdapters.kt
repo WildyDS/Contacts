@@ -6,8 +6,7 @@ import android.util.Log
 import android.view.View
 import android.widget.TextView
 import androidx.appcompat.widget.SearchView
-import androidx.databinding.BindingAdapter
-import androidx.databinding.InverseBindingAdapter
+import androidx.databinding.*
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -55,18 +54,29 @@ fun View.showSnackBar(text: String?) {
     }
 }
 
-@BindingAdapter("app:queryListener")
-fun SearchView.setOnQueryTextListener(queryLiveData: MutableLiveData<String>) {
-    setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+@BindingAdapter("app:query")
+fun SearchView.setQuery(queryLiveData: LiveData<String>) {
+    if (query.toString() != queryLiveData.value) {
+        setQuery(queryLiveData.value, false)
+    }
+}
+
+@InverseBindingAdapter(attribute = "app:query", event = "app:queryAttrChanged")
+fun SearchView.getQuery(): String {
+    return query.toString()
+}
+
+@BindingAdapter("app:queryAttrChanged")
+fun setListeners(searchView: SearchView, attrChange: InverseBindingListener) {
+    searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
         override fun onQueryTextSubmit(query: String?): Boolean {
-            queryLiveData.postValue(query)
+            attrChange.onChange()
             return true
         }
 
         override fun onQueryTextChange(newText: String?): Boolean {
-            queryLiveData.postValue(newText)
+            attrChange.onChange()
             return true
         }
     })
-
 }

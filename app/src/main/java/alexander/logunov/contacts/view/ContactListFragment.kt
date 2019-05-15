@@ -6,11 +6,9 @@ import alexander.logunov.contacts.databinding.FragmentContactListBinding
 import alexander.logunov.contacts.view_model.ContactListViewModel
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.widget.SearchView
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 

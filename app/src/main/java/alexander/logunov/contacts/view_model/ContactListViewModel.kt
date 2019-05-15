@@ -28,12 +28,18 @@ class ContactListViewModel(application: Application) : AndroidViewModel(applicat
 
     val isRefreshing: MutableLiveData<Boolean> = MutableLiveData()
 
+    val refreshListener: SwipeRefreshLayout.OnRefreshListener = SwipeRefreshLayout.OnRefreshListener {
+        refreshContacts()
+        searchQuery.postValue(null)
+    }
+
     fun getContacts(): LiveData<List<Contact>?> {
         return contacts
     }
 
     fun clearContacts() {
-        contacts.postValue(null)
+        contactsList.clear()
+        contacts.postValue(contactsList)
     }
 
     fun refreshContacts() {
@@ -54,30 +60,32 @@ class ContactListViewModel(application: Application) : AndroidViewModel(applicat
         )
     }
 
-    fun loadFromDB() {
+    fun loadFromDB(allowGithubLoading: Boolean = true) {
         isLoading.postValue(true)
         disposable.add(ContactsDatabase.getInstance().contactDao().getAll()
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(
                 {
-                    contactsList.addAll(it)
-                    contacts.postValue(contactsList)
-                    val count = it.count()
-                    val last = it.last()
-                    isLoading.postValue(false)
-                    isRefreshing.postValue(false)
-                    if (count > 1 && Date(last.createdAt + 1000 * 60).after(Date())) {
-                        Log.d(TAG, "Contacts loaded from DB")
-                    } else {
+                    if (allowGithubLoading && it.isEmpty()) {
                         Log.d(TAG, "Loading from GitHub")
                         loadContacts()
+                    } else {
+                        contactsList.addAll(it)
+                        contacts.postValue(contactsList)
+                        if (Date(it.last().createdAt + 60000).before(Date())) {
+                            loadContacts()
+                        } else {
+                            isLoading.postValue(false)
+                            isRefreshing.postValue(false)
+                        }
                     }
-
                 },
                 { error ->
                     Log.e(TAG, "Unable to load contacts from DB", error)
                     snackbarText.postValue("Ошибка БД")
+                    isLoading.postValue(false)
+                    isRefreshing.postValue(false)
                 }
             ))
     }
@@ -85,7 +93,8 @@ class ContactListViewModel(application: Application) : AndroidViewModel(applicat
     fun loadContacts() {
         isLoading.postValue(true)
         val list: ArrayList<Contact> = ArrayList()
-        disposable.add(Api.getInstance().getContacts(1)
+        disposable.add(
+            Api.getInstance().getContacts(1)
             .flatMap {
                     page1 ->
                 list.addAll(page1)
@@ -108,43 +117,40 @@ class ContactListViewModel(application: Application) : AndroidViewModel(applicat
                 { error ->
                     Log.e(TAG, "Unable to load contacts from GitHub", error)
                     snackbarText.postValue("Ошибка сети")
+                    isLoading.postValue(false)
+                    isRefreshing.postValue(false)
                 }
             )
         )
     }
 
-    private val phoneRegex = "[^0-9]".toRegex()
-
     // TODO: может debounce?
-    // TODO: переделать Mutable на Computable, а то фильтр страдает
-    // TODO: починить поиск по имени
     fun filterByNameOrPhone(query: String?) {
         if (query == null || query.isEmpty()) {
             contacts.postValue(contactsList)
         } else {
             contacts.postValue(contactsList.filter { contact  ->
-                contact.name.toLowerCase().contains(query.toLowerCase()) ||
-                        contact.phone.replace(phoneRegex, "").contains(query.replace(phoneRegex, ""))
+                contact.name.toLowerCase().contains(query.toLowerCase())
+//                        ||
+//                        contact.phone.replace(phoneRegex, "").contains(query.replace(phoneRegex, ""))
             })
         }
     }
 
-    val refreshListener: SwipeRefreshLayout.OnRefreshListener = SwipeRefreshLayout.OnRefreshListener {
-        refreshContacts()
-        searchQuery.postValue(null)
+    override fun onCleared() {
+        super.onCleared()
+        disposable.clear()
     }
 
     init {
         snackbarText.observeForever{ snackbarText.postValue(null)}
-        isLoading.postValue(false)
-        isRefreshing.postValue(false)
-        contacts.postValue(contactsList)
-        loadFromDB()
         searchQuery.observeForever { q -> filterByNameOrPhone(q) }
+        loadFromDB()
     }
 
     companion object {
         var contactsList: ArrayList<Contact> = ArrayList()
         const val TAG = "ContactListViewModel"
+        private val phoneRegex = "[^0-9]".toRegex()
     }
 }

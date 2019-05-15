@@ -3,7 +3,7 @@ package alexander.logunov.contacts.network
 import alexander.logunov.contacts.data.model.Contact
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
-import io.reactivex.Flowable
+import io.reactivex.Single
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.moshi.MoshiConverterFactory
@@ -36,7 +36,7 @@ class Api(baseUrl: String) {
         .create(ContactsService::class.java)
 
 
-    fun getContacts(page: Number): Flowable<List<Contact>> {
+    fun getContacts(page: Number): Single<List<Contact>> {
         return service.getContacts(page)
     }
 }

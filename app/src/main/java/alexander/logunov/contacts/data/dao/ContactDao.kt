@@ -11,7 +11,7 @@ import io.reactivex.Flowable
 @Dao
 interface ContactDao {
     @Query("SELECT * FROM Contacts")
-    fun getAll(): Flowable<List<Contact>>
+    fun getAll(): Flowable<List<Contact>?>
 
     @Insert(onConflict = REPLACE)
     fun insert(contact: Contact)

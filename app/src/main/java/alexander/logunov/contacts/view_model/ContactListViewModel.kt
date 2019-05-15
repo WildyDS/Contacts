@@ -86,6 +86,7 @@ class ContactListViewModel(application: Application) : AndroidViewModel(applicat
                     snackbarText.postValue("Ошибка БД")
                     isLoading.postValue(false)
                     isRefreshing.postValue(false)
+                    loadContacts()
                 }
             ))
     }
@@ -130,9 +131,8 @@ class ContactListViewModel(application: Application) : AndroidViewModel(applicat
             contacts.postValue(contactsList)
         } else {
             contacts.postValue(contactsList.filter { contact  ->
-                contact.name.toLowerCase().contains(query.toLowerCase())
-//                        ||
-//                        contact.phone.replace(phoneRegex, "").contains(query.replace(phoneRegex, ""))
+                contact.name.toLowerCase().contains(query.toLowerCase()) ||
+                        contact.phone.number.toString().contains(query)
             })
         }
     }
@@ -151,6 +151,5 @@ class ContactListViewModel(application: Application) : AndroidViewModel(applicat
     companion object {
         var contactsList: ArrayList<Contact> = ArrayList()
         const val TAG = "ContactListViewModel"
-        private val phoneRegex = "[^0-9]".toRegex()
     }
 }

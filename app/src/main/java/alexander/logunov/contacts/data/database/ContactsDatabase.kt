@@ -2,12 +2,15 @@ package alexander.logunov.contacts.data.database
 
 import alexander.logunov.contacts.data.dao.ContactDao
 import alexander.logunov.contacts.data.model.Contact
+import alexander.logunov.contacts.data.model.Converters
 import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import androidx.room.TypeConverters
 
 @Database(entities = [Contact::class], version = 1)
+@TypeConverters(Converters::class)
 abstract class ContactsDatabase : RoomDatabase() {
     abstract fun contactDao(): ContactDao
 

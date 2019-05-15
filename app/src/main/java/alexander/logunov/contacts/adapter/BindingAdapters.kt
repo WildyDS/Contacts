@@ -1,6 +1,7 @@
 package alexander.logunov.contacts.adapter
 
 import alexander.logunov.contacts.data.model.EducationPeriod
+import alexander.logunov.contacts.data.model.Phone
 import alexander.logunov.contacts.data.model.Temperament
 import android.util.Log
 import android.view.View
@@ -23,6 +24,11 @@ fun TextView.setText(educationPeriod: EducationPeriod) {
 @BindingAdapter("android:text")
 fun TextView.setText(temperament: Temperament) {
     text = temperament.toString()
+}
+
+@BindingAdapter("android:text")
+fun TextView.setText(phone: Phone) {
+    text = phone.text
 }
 
 @BindingAdapter("app:visibility")

@@ -15,7 +15,6 @@ class DateAdapter : JsonAdapter<Date>() {
         mDateFormat.timeZone = timeZone
     }
 
-
     override fun fromJson(reader: JsonReader): Date? {
         return mDateFormat.parse(reader.nextString())
     }

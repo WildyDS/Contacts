@@ -20,7 +20,7 @@
                 android:theme="@style/AppTheme.Toolbar"/>
 
         <TextView
-                android:id="@+id/phone"
+                android:id="@+id/name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@{viewModel.contact.name}"
@@ -32,6 +32,7 @@
         />
 
         <TextView
+                android:id="@+id/phone"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@{viewModel.contact.phone}"
@@ -45,6 +46,7 @@
         />
 
         <TextView
+                android:id="@+id/temperament"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@{viewModel.contact.temperament}"
@@ -56,6 +58,7 @@
         />
 
         <TextView
+                android:id="@+id/educationPeriod"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@{viewModel.contact.educationPeriod}"
@@ -67,6 +70,7 @@
         />
 
         <TextView
+                android:id="@+id/biography"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@{viewModel.contact.biography}"

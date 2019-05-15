@@ -15,5 +15,17 @@ class Converters {
         fun toPhone(value: Long): Phone {
             return Phone(value)
         }
+
+        @TypeConverter
+        @JvmStatic
+        fun fromTemperament(value: Temperament): String {
+            return value.toString()
+        }
+
+        @TypeConverter
+        @JvmStatic
+        fun toTemperament(value: String): Temperament {
+            return Temperament.valueOf(value)
+        }
     }
 }

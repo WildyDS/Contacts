@@ -37,18 +37,15 @@ class ContactListViewModel(application: Application) : AndroidViewModel(applicat
         return contacts
     }
 
-    fun clearContacts() {
+    private fun refreshContacts() {
+        isRefreshing.postValue(true)
+        disposable.clear()
         contactsList.clear()
         contacts.postValue(contactsList)
-    }
-
-    fun refreshContacts() {
-        isRefreshing.postValue(true)
-        clearContacts()
         loadContacts(true)
     }
 
-    fun saveContactsToDB(contacts: List<Contact>) {
+    private fun saveContactsToDB(contacts: List<Contact>) {
         disposable.add(
             ContactsDatabase.getInstance().contactDao().insertAll(contacts)
                 .subscribeOn(Schedulers.io())
@@ -60,7 +57,7 @@ class ContactListViewModel(application: Application) : AndroidViewModel(applicat
         )
     }
 
-    fun loadFromDB(allowGithub: Boolean = true) {
+    private fun loadFromDB(allowGithub: Boolean = true) {
         isLoading.postValue(true)
         disposable.add(ContactsDatabase.getInstance().contactDao().getAll()
             .subscribeOn(Schedulers.io())
@@ -93,7 +90,7 @@ class ContactListViewModel(application: Application) : AndroidViewModel(applicat
             ))
     }
 
-    fun loadContacts(allowDB: Boolean = false) {
+    private fun loadContacts(allowDB: Boolean = false) {
         isLoading.postValue(true)
         val list: ArrayList<Contact> = ArrayList()
         disposable.add(
@@ -112,10 +109,10 @@ class ContactListViewModel(application: Application) : AndroidViewModel(applicat
                     {
                         list.addAll(it)
                         saveContactsToDB(list)
+                        contacts.postValue(list)
                         isLoading.postValue(false)
                         isRefreshing.postValue(false)
                         Log.d(TAG, "Contacts loaded from GitHub")
-
                     },
                     { error ->
                         Log.e(TAG, "Unable to load contacts from GitHub", error)
@@ -131,8 +128,7 @@ class ContactListViewModel(application: Application) : AndroidViewModel(applicat
         )
     }
 
-    // TODO: может debounce?
-    fun filterByNameOrPhone(query: String?) {
+    private fun filterByNameOrPhone(query: String?) {
         if (query == null || query.isEmpty()) {
             contacts.postValue(contactsList)
         } else {

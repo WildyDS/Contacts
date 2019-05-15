@@ -14,7 +14,7 @@ data class Contact (
     @Ignore @Json(name = "phone") var phoneString: String,
     @ColumnInfo(name = "height") var height: Float,
     @ColumnInfo(name = "biography") var biography: String,
-    @ColumnInfo(name = "temperament") var temperament: String,
+    @ColumnInfo(name = "temperament") var temperament: Temperament,
     @Ignore var educationPeriod: EducationPeriod
 ) {
 
@@ -29,7 +29,7 @@ data class Contact (
         phone: Phone,
         height: Float,
         biography: String,
-        temperament: String,
+        temperament: Temperament,
         educationPeriodStart: Long,
         educationPeriodEnd: Long,
         createdAt: Long

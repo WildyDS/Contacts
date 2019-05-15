@@ -24,7 +24,7 @@ fun TextView.setText(educationPeriod: EducationPeriod) {
 
 @BindingAdapter("android:text")
 fun TextView.setText(temperament: Temperament) {
-    text = temperament.toString()
+    text = temperament.toString().capitalize()
 }
 
 @BindingAdapter("android:text")

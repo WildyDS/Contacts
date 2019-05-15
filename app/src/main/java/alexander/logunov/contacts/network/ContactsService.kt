@@ -6,6 +6,6 @@ import retrofit2.http.GET
 import retrofit2.http.Path
 
 interface ContactsService {
-    @GET("dgenerated-0{page}.json")
+    @GET("generated-0{page}.json")
     fun getContacts(@Path("page") page: Number): Single<List<Contact>>
 }

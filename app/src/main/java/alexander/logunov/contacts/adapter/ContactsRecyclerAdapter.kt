@@ -9,12 +9,6 @@ import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.RecyclerView
 
-// TODO: сделать binding, binding adapter
-
-/**
- * [RecyclerView.Adapter] that can display a [Contact] and makes a call to the
- * specified [OnListFragmentInteractionListener].
- */
 class ContactsRecyclerAdapter(
     private var mContacts: List<Contact>?,
     private val mListener: OnListFragmentInteractionListener?

@@ -28,23 +28,6 @@ class ContactListFragment : androidx.fragment.app.Fragment() {
 
     private var listener: OnListFragmentInteractionListener? = null
 
-    private val queryChangeListener: SearchView.OnQueryTextListener = object : SearchView.OnQueryTextListener {
-        override fun onQueryTextSubmit(query: String?): Boolean {
-            if (query != null) {
-                viewModel.filterByNameOrPhone(query)
-                return true
-            }
-            return false
-        }
-        override fun onQueryTextChange(newText: String?): Boolean {
-            if (newText != null) {
-                viewModel.filterByNameOrPhone(newText)
-                return true
-            }
-            return false
-        }
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewModel = ViewModelProviders.of(this).get(ContactListViewModel::class.java)
@@ -71,9 +54,6 @@ class ContactListFragment : androidx.fragment.app.Fragment() {
             layoutManager = LinearLayoutManager(context)
             adapter = contactsAdapter
         }
-        with(binding!!.search) {
-            setOnQueryTextListener(queryChangeListener)
-        }
         binding!!.lifecycleOwner = this
         binding!!.viewModel = viewModel
         return binding!!.root
@@ -89,7 +69,6 @@ class ContactListFragment : androidx.fragment.app.Fragment() {
     }
 
     override fun onDetach() {
-        Log.d(TAG, "Detached")
         super.onDetach()
         listener = null
         binding = null

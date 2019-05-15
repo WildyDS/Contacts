@@ -18,6 +18,8 @@ import kotlin.collections.ArrayList
 class ContactListViewModel(application: Application) : AndroidViewModel(application) {
     private val disposable = CompositeDisposable()
 
+    val searchQuery: MutableLiveData<String> = MutableLiveData()
+
     val contacts: MutableLiveData<List<Contact>?> = MutableLiveData()
 
     val snackbarText: MutableLiveData<String> = MutableLiveData()
@@ -138,6 +140,7 @@ class ContactListViewModel(application: Application) : AndroidViewModel(applicat
         isRefreshing.postValue(false)
         contacts.postValue(contactsList)
         loadFromDB()
+        searchQuery.observeForever { q -> filterByNameOrPhone(q)}
     }
 
     companion object {

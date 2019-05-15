@@ -5,7 +5,11 @@ import alexander.logunov.contacts.data.model.Temperament
 import android.util.Log
 import android.view.View
 import android.widget.TextView
+import androidx.appcompat.widget.SearchView
 import androidx.databinding.BindingAdapter
+import androidx.databinding.InverseBindingAdapter
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.material.snackbar.Snackbar
 
@@ -49,4 +53,20 @@ fun View.showSnackBar(text: String?) {
             Log.w(TAG, "Can not show snackbar!", e)
         }
     }
+}
+
+@BindingAdapter("app:queryListener")
+fun SearchView.setOnQueryTextListener(queryLiveData: MutableLiveData<String>) {
+    setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+        override fun onQueryTextSubmit(query: String?): Boolean {
+            queryLiveData.postValue(query)
+            return true
+        }
+
+        override fun onQueryTextChange(newText: String?): Boolean {
+            queryLiveData.postValue(newText)
+            return true
+        }
+    })
+
 }

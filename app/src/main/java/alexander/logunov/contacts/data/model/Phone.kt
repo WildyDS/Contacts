@@ -11,7 +11,7 @@ data class Phone(val text: String) {
 
     companion object {
         val phoneRegex = "[^0-9]".toRegex()
-        val outputFormat = "+$1 ($3) $3-$4"
+        const val outputFormat = "+$1 ($3) $3-$4"
         val inputFormat = "(\\d)(\\d{3})(\\d{3})(\\d{4})".toRegex()
     }
 }

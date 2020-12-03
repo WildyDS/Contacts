@@ -30,7 +30,6 @@ class MainActivity : AppCompatActivity(), ContactListFragment.OnListFragmentInte
     }
 
     override fun onListFragmentInteraction(contact: Contact) {
-        Log.d(TAG, contact.toString())
         supportFragmentManager.beginTransaction()
             .replace(R.id.container, ContactFragment.newInstance(contact))
             .addToBackStack("ContactFragment")

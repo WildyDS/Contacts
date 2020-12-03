@@ -1,6 +1,6 @@
 package alexander.logunov.contacts.network
 
-import alexander.logunov.contacts.data.model.Contact
+import alexander.logunov.contacts.data.model.ContactDTO
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import io.reactivex.Single
@@ -26,6 +26,7 @@ class Api(baseUrl: String) {
     private val moshi: Moshi = Moshi.Builder()
         .add(KotlinJsonAdapterFactory())
         .add(Date::class.java, DateAdapter())
+        .add(Date::class.java, DateAdapter())
         .build()
 
     private val service: ContactsService = Retrofit.Builder()
@@ -36,7 +37,7 @@ class Api(baseUrl: String) {
         .create(ContactsService::class.java)
 
 
-    fun getContacts(page: Number): Single<List<Contact>> {
+    fun getContacts(page: Number): Single<List<ContactDTO>> {
         return service.getContacts(page)
     }
 }

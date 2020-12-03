@@ -25,7 +25,7 @@ class Converters {
         @TypeConverter
         @JvmStatic
         fun toTemperament(value: String): Temperament {
-            return Temperament.valueOf(value)
+            return Temperament.fromString(value)
         }
     }
 }

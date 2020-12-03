@@ -92,24 +92,17 @@ class ContactListViewModel(application: Application) : AndroidViewModel(applicat
 
     private fun loadContacts(allowDB: Boolean = false) {
         isLoading.postValue(true)
-        val list: ArrayList<Contact> = ArrayList()
         disposable.add(
             Api.getInstance().getContacts(1)
-                .flatMap { page1 ->
-                    list.addAll(page1)
-                    Api.getInstance().getContacts(2)
-                }
-                .flatMap { page2 ->
-                    list.addAll(page2)
-                    Api.getInstance().getContacts(3)
-                }
+                .flatMap { Api.getInstance().getContacts(2) }
+                .flatMap { Api.getInstance().getContacts(3) }
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
-                    {
-                        list.addAll(it)
-                        saveContactsToDB(list)
-                        contacts.postValue(list)
+                    { pages ->
+                        val contactList: List<Contact> = pages.map { contactDTO -> Contact(contactDTO) }
+                        saveContactsToDB(contactList)
+                        contacts.postValue(contactList)
                         isLoading.postValue(false)
                         isRefreshing.postValue(false)
                         Log.d(TAG, "Contacts loaded from GitHub")

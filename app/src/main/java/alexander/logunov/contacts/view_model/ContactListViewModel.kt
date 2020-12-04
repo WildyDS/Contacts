@@ -35,8 +35,6 @@ class ContactListViewModel(application: Application) : DisposableViewModel(appli
 
     private fun refreshContacts() {
         isRefreshing.postValue(true)
-        contactsList.clear()
-        contacts.postValue(contactsList)
         loadContacts()
     }
 
@@ -52,30 +50,32 @@ class ContactListViewModel(application: Application) : DisposableViewModel(appli
     }
 
     private fun loadFromDB() {
-        addDisposable(ContactsDatabase.getInstance().contactDao().getAll()
+        ContactsDatabase.getInstance().contactDao().getAll()
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
-                .doOnSubscribe {
-                    isLoading.postValue(true)
-                }
-                .doOnEach {
-                    isLoading.postValue(false)
-                    isRefreshing.postValue(false)
-                }
+            .doOnSubscribe {
+                isLoading.postValue(true)
+            }
+            .doOnEach {
+                isLoading.postValue(false)
+                isRefreshing.postValue(false)
+            }
             .subscribe(
-                {
-                    contactsList.addAll(it)
-                    contacts.postValue(contactsList)
-                    if ((it.isEmpty()) || Date(it.last().createdAt + 60000).before(Date())) {
+                    {
+                        contactsList.clear()
+                        contactsList.addAll(it)
+                        contacts.postValue(contactsList)
+                        if ((it.isEmpty()) || Date(it.last().createdAt + 60000).before(Date())) {
+                            loadContacts()
+                        }
+                    },
+                    { error ->
+                        Log.e(TAG, "Unable to load contacts from DB", error)
+                        snackbarText.postValue("Ошибка БД: ${error.localizedMessage}")
                         loadContacts()
                     }
-                },
-                { error ->
-                    Log.e(TAG, "Unable to load contacts from DB", error)
-                    snackbarText.postValue("Ошибка БД: ${error.localizedMessage}")
-                    loadContacts()
-                }
-            ))
+            )
+            .run { addDisposable(this) }
     }
 
     private fun loadContacts() {
@@ -85,6 +85,10 @@ class ContactListViewModel(application: Application) : DisposableViewModel(appli
                 .flatMap { Api.getInstance().getContacts(3) }
                 .doOnSubscribe {
                     isLoading.postValue(true)
+                }
+                .doFinally {
+                    isLoading.postValue(false)
+                    isRefreshing.postValue(false)
                 }
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
